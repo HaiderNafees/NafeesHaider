@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nafees Haider - Web Developer</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/brands.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="container">
+            <a href="#" class="logo">Nafees<span>.</span></a>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div id="hero-canvas"></div>
+        <div class="container">
+            <div class="hero-content" data-aos="fade-up">
+                <div class="hero-title-wrapper">
+                    <h1>Hi, I'm <br> <span class="gradient-text">Nafees Haider</span></h1>
+                    <div class="floating-shapes">
+                        <div class="shape"></div>
+                        <div class="shape"></div>
+                        <div class="shape"></div>
+                    </div>
+                </div>
+                <div class="typing-text"></div>
+                <p class="hero-description">Crafting responsive and user-friendly web experiences</p>
+                <div class="cta-buttons">
+                    <a href="#contact" class="btn primary glass-effect">Get in Touch</a>
+                    <a href="#projects" class="btn secondary glass-effect">View Work</a>
+                </div>
+            </div>
+        </div>
+        <div id="particles-js" class="particles"></div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <h2 class="section-title">About Me</h2>
+            <div class="about-content">
+                <div class="about-text-container">
+                    <div class="about-text">
+                        <p>I'm a passionate Junior Web Developer with a strong foundation in front-end web development and WordPress. Currently pursuing a Bachelor's degree in Computer Engineering, I bring creativity and technical expertise to every project.</p>
+                        <p>With a background in Computer Information Technology through my Diploma of Associate Engineering (DAE), I combine theoretical knowledge with practical skills to deliver exceptional web solutions.</p>
+                        <div class="education">
+                            <h3>Education</h3>
+                            <ul>
+                                <li>Bachelor's in Computer Engineering (In Progress)</li>
+                                <li>Diploma of Associate Engineering (DAE) - Computer Information Technology</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-model-container">
+                    <div id="about-3d-model"></div>
+                    <div class="model-overlay"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Skills Section -->
+    <section id="skills" class="skills">
+        <div class="container">
+            <h2 class="section-title">Skills</h2>
+            <div class="skills-content">
+                <div class="skills-grid">
+                    <div class="skill-card" data-aos="zoom-in" data-aos-delay="100">
+                        <div class="skill-card-inner">
+                            <div class="skill-front">
+                                <i class="fas fa-code"></i>
+                                <h3>Front-end Development</h3>
+                                <div class="skill-level">
+                                    <div class="level-bar">
+                                        <div class="level-fill" style="width: 90%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="skill-back">
+                                <ul>
+                                    <li><span class="skill-tag">HTML5</span></li>
+                                    <li><span class="skill-tag">CSS3</span></li>
+                                    <li><span class="skill-tag">JavaScript</span></li>
+                                    <li><span class="skill-tag">Responsive Design</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skill-card" data-aos="zoom-in" data-aos-delay="200">
+                        <div class="skill-card-inner">
+                            <div class="skill-front">
+                                <i class="fab fa-wordpress"></i>
+                                <h3>WordPress Development</h3>
+                                <div class="skill-level">
+                                    <div class="level-bar">
+                                        <div class="level-fill" style="width: 85%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="skill-back">
+                                <ul>
+                                    <li><span class="skill-tag">Theme Customization</span></li>
+                                    <li><span class="skill-tag">Plugin Integration</span></li>
+                                    <li><span class="skill-tag">Custom Solutions</span></li>
+                                    <li><span class="skill-tag">Performance Optimization</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="skill-card" data-aos="zoom-in" data-aos-delay="300">
+                        <div class="skill-card-inner">
+                            <div class="skill-front">
+                                <i class="fas fa-tools"></i>
+                                <h3>Tools & Technologies</h3>
+                                <div class="skill-level">
+                                    <div class="level-bar">
+                                        <div class="level-fill" style="width: 80%"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="skill-back">
+                                <ul>
+                                    <li><span class="skill-tag">Git</span></li>
+                                    <li><span class="skill-tag">VS Code</span></li>
+                                    <li><span class="skill-tag">Bootstrap</span></li>
+                                    <li><span class="skill-tag">Figma</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="skills-model-container">
+                    <div id="skills-3d-model"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Projects Section -->
+    <section id="projects" class="projects">
+        <div class="container">
+            <h2 class="section-title">My Projects</h2>
+            <div class="projects-content">
+                <div class="projects-showcase">
+                    <div class="projects-grid">
+                        <!-- WordPress Theme Project -->
+                        <div class="project-card" data-aos="fade-up" data-aos-delay="100">
+                            <div class="project-card-inner">
+                                <div class="project-icon">
+                                    <i class="fab fa-wordpress-simple"></i>
+                                    <div class="icon-glow"></div>
+                                </div>
+                                <div class="project-info">
+                                    <h3>WordPress Theme Development</h3>
+                                    <p>Custom WordPress theme development with modern design principles and responsive layouts.</p>
+                                    <div class="project-tech-stack">
+                                        <span class="tech-badge"><i class="fab fa-php"></i> PHP</span>
+                                        <span class="tech-badge"><i class="fab fa-wordpress-simple"></i> WordPress</span>
+                                        <span class="tech-badge"><i class="fab fa-css3-alt"></i> CSS</span>
+                                    </div>
+                                    <div class="project-links">
+                                        <a href="https://github.com/HaiderNafees/wordpress-theme" class="btn secondary" target="_blank">
+                                            <i class="fab fa-github"></i> View Source
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Dragon Kombat Project -->
+                        <div class="project-card" data-aos="fade-up" data-aos-delay="200">
+                            <div class="project-card-inner">
+                                <div class="project-icon">
+                                    <i class="fas fa-dragon"></i>
+                                    <div class="icon-glow"></div>
+                                </div>
+                                <div class="project-info">
+                                    <h3>Dragon Kombat</h3>
+                                    <p>A web-based fighting game implementation using HTML, CSS, and JavaScript.</p>
+                                    <div class="project-tech-stack">
+                                        <span class="tech-badge"><i class="fab fa-html5"></i> HTML5</span>
+                                        <span class="tech-badge"><i class="fab fa-css3-alt"></i> CSS3</span>
+                                        <span class="tech-badge"><i class="fab fa-js"></i> JavaScript</span>
+                                    </div>
+                                    <div class="project-links">
+                                        <a href="https://github.com/HaiderNafees/dragonkombat" class="btn secondary" target="_blank">
+                                            <i class="fab fa-github"></i> View Source
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sweet Delight Project -->
+                        <div class="project-card" data-aos="fade-up" data-aos-delay="300">
+                            <div class="project-card-inner">
+                                <div class="project-icon">
+                                    <i class="fas fa-cookie-bite"></i>
+                                    <div class="icon-glow"></div>
+                                </div>
+                                <div class="project-info">
+                                    <h3>Sweet Delight Cupcakes Theme</h3>
+                                    <p>A responsive WordPress theme for a cupcake business with modern design elements.</p>
+                                    <div class="project-tech-stack">
+                                        <span class="tech-badge"><i class="fab fa-wordpress-simple"></i> WordPress</span>
+                                        <span class="tech-badge"><i class="fab fa-css3-alt"></i> CSS3</span>
+                                        <span class="tech-badge"><i class="fab fa-js"></i> JavaScript</span>
+                                    </div>
+                                    <div class="project-links">
+                                        <a href="https://haidernafees.github.io/sweetdelight-cupcakes-theme" class="btn primary" target="_blank">
+                                            <i class="fas fa-external-link-alt"></i> Live Demo
+                                        </a>
+                                        <a href="https://github.com/HaiderNafees/sweetdelight-cupcakes-theme" class="btn secondary" target="_blank">
+                                            <i class="fab fa-github"></i> Source Code
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Crypto Project -->
+                        <div class="project-card" data-aos="fade-up" data-aos-delay="400">
+                            <div class="project-card-inner">
+                                <div class="project-icon">
+                                    <i class="fas fa-coins"></i>
+                                    <div class="icon-glow"></div>
+                                </div>
+                                <div class="project-info">
+                                    <h3>Neko Cat Coin</h3>
+                                    <p>Cryptocurrency website with modern UI and blockchain integration.</p>
+                                    <div class="project-tech-stack">
+                                        <span class="tech-badge"><i class="fab fa-react"></i> React</span>
+                                        <span class="tech-badge"><i class="fab fa-ethereum"></i> Web3</span>
+                                        <span class="tech-badge"><i class="fab fa-css3-alt"></i> CSS3</span>
+                                    </div>
+                                    <div class="project-links">
+                                        <a href="https://github.com/HaiderNafees/nekocatcoin" class="btn secondary" target="_blank">
+                                            <i class="fab fa-github"></i> View Source
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="projects-model-container">
+                    <div id="projects-3d-model"></div>
+                    <div class="model-overlay"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <h2 class="section-title">Get in Touch</h2>
+            <div class="contact-content">
+                <div class="contact-info">
+                    <div class="contact-item">
+                        <i class="fas fa-envelope"></i>
+                        <h3>Email</h3>
+                        <p>haidernafees161@gmail.com</p>
+                    </div>
+                    <div class="contact-item">
+                        <i class="fas fa-phone"></i>
+                        <h3>Phone</h3>
+                        <p>+923180444040</p>
+                    </div>
+                    <div class="social-links">
+                        <a href="https://github.com/HaiderNafees" target="_blank"><i class="fab fa-github"></i></a>
+                        <a href="https://www.linkedin.com/in/nafees-haider-052779339/" target="_blank"><i class="fab fa-linkedin"></i></a>
+                       
+                    </div>
+                </div>
+                <form class="contact-form">
+                    <input type="text" placeholder="Your Name" required>
+                    <input type="email" placeholder="Your Email" required>
+                    <textarea placeholder="Your Message" required></textarea>
+                    <button type="submit" class="btn primary">Send Message</button>
+                </form>
+            </div>
+        </div>
+    </section>
+
+   
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/three-animation.js"></script>
+    <script src="js/about-model.js"></script>
+    <script src="js/skills-model.js"></script>
+    <script src="js/projects-model.js"></script>
+</body>
+</html> 

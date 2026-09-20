@@ -1,176 +1,176 @@
-import {
-  AppBar,
-  Box,
-  Button,
-  IconButton,
-  Stack,
-  Toolbar,
-  Typography,
-  useTheme,
-  useMediaQuery,
-  Drawer,
-  List,
-  ListItem,
-  ListItemText,
-  alpha,
-} from '@mui/material';
-import Brightness4Icon from '@mui/icons-material/Brightness4';
-import Brightness7Icon from '@mui/icons-material/Brightness7';
-import MenuIcon from '@mui/icons-material/Menu';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { motion, AnimatePresence, useReducedMotion } from 'framer-motion';
+import { Menu, X, Moon, Sun } from 'lucide-react';
+import { EASE } from '../lib/motion';
+
+const LINKS = ['About', 'Skills', 'Projects', 'GitHub', 'Contact'];
+const GITHUB_URL = 'https://github.com/HaiderNafees';
 
 /**
- * NAVBAR — brand and nav items fade in on load with a subtle
- * stagger (load-time, not scroll-triggered). Theme toggle,
- * mobile drawer and smooth scrolling all preserved.
+ * NAVBAR — fixed, transparent at top, glass-morphism once the
+ * user scrolls. Active section gets a sliding gradient underline
+ * (framer-motion layoutId). Mobile: animated dropdown sheet.
  */
-const Navbar = ({ isDarkMode, toggleTheme }) => {
-  const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
-  const [mobileOpen, setMobileOpen] = useState(false);
+export default function Navbar({ theme, onToggleTheme }) {
+  const [scrolled, setScrolled] = useState(false);
+  const [active, setActive] = useState('');
+  const [open, setOpen] = useState(false);
+  const reduced = useReducedMotion();
 
-  const navItems = ['About', 'Skills', 'Projects', 'Contact'];
+  /* Glass state + active-section spy in ONE rAF-throttled handler.
+     PERF: previously two unthrottled listeners ran 5
+     getBoundingClientRect() reads per scroll event (layout thrash).
+     Now rect reads happen at most once per frame, and state only
+     updates when a value actually changes. */
+  useEffect(() => {
+    const ids = ['about', 'skills', 'projects', 'testimonials', 'contact'];
+    let rafId = null;
 
-  const scrollToSection = (sectionId) => {
-    const element = document.getElementById(sectionId.toLowerCase());
-    if (element) {
-      element.scrollIntoView({ behavior: 'smooth' });
+    const measure = () => {
+      rafId = null;
+      setScrolled(window.scrollY > 24);
+
+      const probe = window.innerHeight * 0.35;
+      let current = '';
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (el && el.getBoundingClientRect().top <= probe) current = id;
+      }
+      setActive((prev) => (prev === current ? prev : current));
+    };
+
+    const onScroll = () => {
+      if (rafId === null) rafId = requestAnimationFrame(measure);
+    };
+
+    measure();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      window.removeEventListener('resize', onScroll);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
+  }, []);
+
+  const scrollTo = (id) => {
+    setOpen(false);
+    if (id === 'github') {
+      window.open(GITHUB_URL, '_blank', 'noopener');
+      return;
     }
+    document.getElementById(id)?.scrollIntoView({ behavior: reduced ? 'auto' : 'smooth' });
   };
 
-  const drawer = (
-    <Box sx={{ width: 250, pt: 2 }}>
-      <List>
-        {navItems.map((item) => (
-          <ListItem
-            button
-            key={item}
-            onClick={() => {
-              scrollToSection(item);
-              setMobileOpen(false);
-            }}
-          >
-            <ListItemText primary={item} />
-          </ListItem>
-        ))}
-      </List>
-    </Box>
-  );
+  const linkHref = (id) => (id === 'github' ? GITHUB_URL : `#${id}`);
 
   return (
-    <AppBar
-      position="fixed"
-      sx={{
-        background: alpha(theme.palette.background.paper, 0.8),
-        backdropFilter: 'blur(10px)',
-        boxShadow: 'none',
-        borderBottom: `1px solid ${theme.palette.divider}`,
-        zIndex: theme.zIndex.drawer + 1,
-      }}
+    <motion.header
+      className={`nav ${scrolled ? 'nav--scrolled' : ''}`}
+      initial={{ y: -70, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.7, ease: EASE, delay: 0.15 }}
     >
-      <Toolbar>
-        <Typography
-          variant="h6"
-          component="div"
-          sx={{
-            fontWeight: 600,
-            color: theme.palette.text.primary,
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1,
-            opacity: 0,
-            animation: 'sr-hero-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards',
+      <div className="nav__inner">
+        {/* Logo */}
+        <a
+          className="nav__logo"
+          href="#hero"
+          onClick={(e) => {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: reduced ? 'auto' : 'smooth' });
           }}
         >
-          Nafees Haider
-        </Typography>
+          <span className="nav__logo-mark">NH</span>
+          <span>
+            Nafees<span style={{ color: 'var(--wm-pink)' }}>.</span>Haider
+          </span>
+        </a>
 
-        <Box sx={{ flexGrow: 1 }} />
+        {/* Desktop links */}
+        <ul className="nav__links nav__links--desktop">
+          {LINKS.map((label) => {
+            const id = label.toLowerCase();
+            const isActive = id === active;
+            return (
+              <li key={label}>
+                <a
+                  className={`nav__link ${isActive ? 'nav__link--active' : ''}`}
+                  href={linkHref(id)}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    scrollTo(id);
+                  }}
+                >
+                  {label}
+                  {isActive && (
+                    <motion.span
+                      layoutId="nav-underline"
+                      className="nav__underline"
+                      transition={{ duration: 0.45, ease: EASE }}
+                    />
+                  )}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
 
-        {isMobile ? (
-          <>
-            <IconButton
-              color="inherit"
-              aria-label="toggle theme"
-              onClick={toggleTheme}
-              sx={{
-                mr: 1,
-                bgcolor: isDarkMode ? alpha(theme.palette.common.white, 0.1) : alpha(theme.palette.primary.main, 0.1),
-                borderRadius: 2,
-                transition: 'all 0.2s ease-in-out',
-                color: isDarkMode ? theme.palette.common.white : theme.palette.text.primary,
-                '&:hover': {
-                  bgcolor: isDarkMode ? alpha(theme.palette.common.white, 0.2) : alpha(theme.palette.primary.main, 0.2),
-                  transform: 'scale(1.05)',
-                },
-              }}
-            >
-              {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
-            </IconButton>
-            <IconButton
-              color="inherit"
-              aria-label="open drawer"
-              edge="start"
-              onClick={() => setMobileOpen(!mobileOpen)}
-              sx={{
-                color: theme.palette.text.primary,
-                '&:hover': { color: theme.palette.primary.main },
-              }}
-            >
-              <MenuIcon />
-            </IconButton>
-            <Drawer
-              variant="temporary"
-              anchor="right"
-              open={mobileOpen}
-              onClose={() => setMobileOpen(false)}
-              ModalProps={{ keepMounted: true }}
-              sx={{
-                '& .MuiDrawer-paper': {
-                  boxSizing: 'border-box',
-                  width: 250,
-                  background: theme.palette.background.paper,
-                },
-              }}
-            >
-              {drawer}
-            </Drawer>
-          </>
-        ) : (
-          <Stack direction="row" spacing={2} alignItems="center">
-            {navItems.map((item, index) => (
-              <Button
-                key={item}
-                onClick={() => scrollToSection(item)}
-                sx={{
-                  color: theme.palette.text.primary,
-                  opacity: 0,
-                  animation: `sr-hero-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${0.2 + index * 0.08}s forwards`,
-                  '&:hover': { color: theme.palette.primary.main },
-                }}
-              >
-                {item}
-              </Button>
-            ))}
-            <IconButton
-              onClick={toggleTheme}
-              sx={{
-                bgcolor: alpha(theme.palette.primary.main, 0.05),
-                borderRadius: 2,
-                transition: 'all 0.2s ease-in-out',
-                '&:hover': {
-                  bgcolor: alpha(theme.palette.primary.main, 0.1),
-                  transform: 'scale(1.05)',
-                },
-              }}
-            >
-              {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
-            </IconButton>
-          </Stack>
+        {/* Theme toggle + burger */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <button
+            className="social-btn"
+            onClick={onToggleTheme}
+            aria-label="Toggle color theme"
+            style={{ width: 40, height: 40, borderRadius: 12 }}
+          >
+            {theme === 'dark' ? <Sun size={18} /> : <Moon size={18} />}
+          </button>
+          <button
+            className="nav__burger"
+            onClick={() => setOpen((o) => !o)}
+            aria-label="Toggle navigation menu"
+            aria-expanded={open}
+          >
+            {open ? <X size={20} /> : <Menu size={20} />}
+          </button>
+        </div>
+      </div>
+
+      {/* Mobile sheet */}
+      <AnimatePresence>
+        {open && (
+          <motion.nav
+            className="nav__sheet"
+            initial={{ height: 0, opacity: 0 }}
+            animate={{ height: 'auto', opacity: 1 }}
+            exit={{ height: 0, opacity: 0 }}
+            transition={{ duration: 0.45, ease: EASE }}
+          >
+            <ul className="nav__sheet-list">
+              {LINKS.map((label, i) => (
+                <motion.li
+                  key={label}
+                  initial={{ opacity: 0, x: 18 }}
+                  animate={{ opacity: 1, x: 0 }}
+                  transition={{ delay: 0.05 + i * 0.06, duration: 0.4, ease: EASE }}
+                >
+                  <a
+                    className="nav__sheet-link"
+                    href={linkHref(label.toLowerCase())}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      scrollTo(label.toLowerCase());
+                    }}
+                  >
+                    {label}
+                  </a>
+                </motion.li>
+              ))}
+            </ul>
+          </motion.nav>
         )}
-      </Toolbar>
-    </AppBar>
+      </AnimatePresence>
+    </motion.header>
   );
-};
-
-export default Navbar;
+}

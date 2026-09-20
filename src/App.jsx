@@ -1,96 +1,116 @@
-import { useState, useEffect } from 'react';
-import { ThemeProvider, CssBaseline, Box } from '@mui/material';
-
-import { createTheme } from '@mui/material/styles';
+import { useCallback, useEffect, useRef, useState } from 'react';
+import { MotionConfig } from 'framer-motion';
+import Preloader from './components/Preloader';
+import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import About from './components/About';
 import Skills from './components/Skills';
 import Projects from './components/Projects';
-import Contact from './components/Contact';
-import Navbar from './components/Navbar';
 import Testimonials from './components/Testimonials';
+import Contact from './components/Contact';
+import Footer from './components/Footer';
 
-const lightTheme = createTheme({
-  typography: {
-    fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif',
-    h1: { fontWeight: 700 },
-    h2: { fontWeight: 700 },
-    h3: { fontWeight: 600 },
-    h4: { fontWeight: 600 },
-    h5: { fontWeight: 500 },
-    h6: { fontWeight: 500 },
-    body1: { fontSize: '1rem', lineHeight: 1.5 },
-    body2: { fontSize: '0.875rem', lineHeight: 1.57 }
-  },
-  palette: {
-    mode: 'light',
-    primary: {
-      main: '#007AFF',
-    },
-    background: {
-      default: '#f5f5f7',
-      paper: '#ffffff',
-    },
-  },
-});
+/**
+ * APP — layout orchestrator.
+ * Owns: preloader gating, theme (dark/light via data-theme),
+ * scroll-driven background gradient shift (MCP21), and a global
+ * click ripple micro-interaction.
+ */
+export default function App() {
+  const [loading, setLoading] = useState(true);
+  const [theme, setTheme] = useState(() =>
+    typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-color-scheme: light)').matches
+      ? 'light'
+      : 'dark'
+  );
 
-const darkTheme = createTheme({
-  typography: {
-    fontFamily: 'Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif',
-    h1: { fontWeight: 700 },
-    h2: { fontWeight: 700 },
-    h3: { fontWeight: 600 },
-    h4: { fontWeight: 600 },
-    h5: { fontWeight: 500 },
-    h6: { fontWeight: 500 },
-    body1: { fontSize: '1rem', lineHeight: 1.5 },
-    body2: { fontSize: '0.875rem', lineHeight: 1.57 }
-  },
-  palette: {
-    mode: 'dark',
-    primary: {
-      main: '#0A84FF',
-    },
-    background: {
-      default: '#000000',
-      paper: '#1c1c1e',
-    },
-  },
-});
-
-function App() {
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    return mediaQuery.matches;
-  });
-
+  /* Reflect theme onto <html> for the CSS layer. */
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-color-scheme: dark)');
-    const handleChange = (e) => setIsDarkMode(e.matches);
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
+    document.documentElement.dataset.theme = theme;
+  }, [theme]);
+
+  /* ---- MCP21: background gradient shifts as the user scrolls.
+     --bg-shift (0 → 1) is written on the .bg-wash node itself —
+     scoped to one decorative element instead of <html>, so a scroll
+     frame never invalidates styles document-wide. Quantized to
+     0.5% steps to skip redundant writes. rAF-throttled. ---- */
+  const washRef = useRef(null);
+  useEffect(() => {
+    const el = washRef.current;
+    if (!el) return undefined;
+    let rafId = null;
+    let last = -1;
+    const onScroll = () => {
+      if (rafId !== null) return;
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        const max = document.documentElement.scrollHeight - window.innerHeight;
+        const p = max > 0 ? window.scrollY / max : 0;
+        const q = Math.round(p * 200) / 200;
+        if (q !== last) {
+          last = q;
+          el.style.setProperty('--bg-shift', q.toFixed(3));
+        }
+      });
+    };
+    onScroll();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    return () => {
+      window.removeEventListener('scroll', onScroll);
+      if (rafId !== null) cancelAnimationFrame(rafId);
+    };
   }, []);
 
-  const toggleTheme = () => {
-    setIsDarkMode(!isDarkMode);
-  };
+  /* ---- Global ripple: click any .btn → spawn a ripple dot. ---- */
+  useEffect(() => {
+    const onClick = (e) => {
+      const btn = e.target.closest?.('.btn');
+      if (!btn) return;
+      const rect = btn.getBoundingClientRect();
+      const dot = document.createElement('span');
+      dot.className = 'ripple-dot';
+      dot.style.left = `${e.clientX - rect.left}px`;
+      dot.style.top = `${e.clientY - rect.top}px`;
+      btn.appendChild(dot);
+      dot.addEventListener('animationend', () => dot.remove());
+    };
+    document.addEventListener('click', onClick);
+    return () => document.removeEventListener('click', onClick);
+  }, []);
+
+  const handleLoaded = useCallback(() => setLoading(false), []);
+  const toggleTheme = () => setTheme((t) => (t === 'dark' ? 'light' : 'dark'));
 
   return (
-    <ThemeProvider theme={isDarkMode ? darkTheme : lightTheme}>
-      <CssBaseline />
-      <Box sx={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
-        <Navbar isDarkMode={isDarkMode} toggleTheme={toggleTheme} />
-        <Box component="main" sx={{ flexGrow: 1, mt: '64px' }}>
-          <Hero />
-          <About />
-          <Skills />
-          <Projects />
-          <Testimonials />
-          <Contact />
-        </Box>
-      </Box>
-    </ThemeProvider>
+    <MotionConfig reducedMotion="user">
+      {/* Decorative fixed layers (behind everything) */}
+      <div className="bg-wash" aria-hidden ref={washRef} />
+      <div className="bg-grid" aria-hidden />
+
+      {loading && <Preloader onDone={handleLoaded} />}
+
+      {/* Page content mounts after the preloader finishes so its
+          entrance animations play right as the veil lifts. */}
+      {!loading && (
+        <>
+          <Navbar theme={theme} onToggleTheme={toggleTheme} />
+          <main>
+            <Hero />
+            <div className="wm-divider" aria-hidden />
+            <About />
+            <div className="wm-divider" aria-hidden />
+            <Skills />
+            <div className="wm-divider" aria-hidden />
+            <Projects />
+            <div className="wm-divider" aria-hidden />
+            <Testimonials />
+            <div className="wm-divider" aria-hidden />
+            <Contact />
+          </main>
+          <Footer />
+        </>
+      )}
+    </MotionConfig>
   );
 }
-
-export default App;

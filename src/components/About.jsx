@@ -1,152 +1,149 @@
-import { Box, Container, Grid, Paper, Typography, useTheme, alpha } from '@mui/material';
-import { ScrollReveal, SectionHeading, Parallax } from './ScrollReveal';
+import { motion } from 'framer-motion';
+import { Award, MapPin, Download } from 'lucide-react';
+import { staggerContainer, fadeUp, cardReveal, slideLeft, slideRight, VIEWPORT } from '../lib/motion';
+
+const GITHUB_URL = 'https://github.com/HaiderNafees';
+
+const EXPERIENCE = [
+  {
+    role: 'Frontend Developer',
+    meta: 'Freelance · 2021 – Present',
+    desc: 'Designing and building responsive websites for clients across e-commerce and corporate sectors with HTML5, CSS3, JavaScript and React — from landing pages to full storefronts.',
+  },
+  {
+    role: 'Frontend Web Developer',
+    meta: 'MaltaThemes · Jun 2022 – Apr 2023',
+    desc: 'Developed and maintained modern web applications focused on performance and UX. Collaborated on responsive designs and optimized frontend functionality across products.',
+  },
+];
 
 /**
- * ABOUT — heading masks in, profile zooms in on a parallax layer,
- * bio paragraphs stagger, experience cards scale up + sharpen.
- * Bio content preserved from the previous version.
+ * ABOUT — photo left (slides in from left), bio + timeline right.
+ * Timeline nodes alternate pink/green on a gradient spine.
  */
-const About = () => {
-  const theme = useTheme();
-
-  const experiences = [
-    {
-      title: 'Frontend Developer',
-      company: 'Freelance Web Developer',
-      period: '2021 - Present',
-      description:
-        'Assisted in developing and maintaining responsive websites using HTML5, CSS3, JavaScript, and jQuery for clients in various industries, including e-commerce and corporate sectors.',
-    },
-    {
-      title: 'Frontend Web Developer',
-      company: 'MaltaThemes',
-      period: 'Jun 2022 - Apr 2023',
-      description:
-        'Developed and maintained modern web applications with focus on performance and user experience. Collaborated with team members to implement responsive designs and optimize frontend functionality.',
-    },
-  ];
-
+export default function About() {
   return (
-    <Box id="about" sx={{ py: { xs: 8, md: 12 }, background: theme.palette.background.default }}>
-      <Container>
-        <SectionHeading text="About Me" />
+    <section className="section" id="about">
+      <div className="container">
+        <motion.div
+          className="section-head"
+          initial="hidden"
+          whileInView="show"
+          viewport={VIEWPORT}
+          variants={staggerContainer(0.12)}
+        >
+          <span className="wm-badge">About Me</span>
+          <h2 className="section-title section-title--grad" style={{ marginTop: 14 }}>
+            Turning ideas into interfaces
+          </h2>
+          <div className="accent-bar" />
+        </motion.div>
 
-        {/* ---- Intro: image + bio ---- */}
-        <Grid container spacing={6} sx={{ mb: 10 }}>
-          <Grid item xs={12} md={5}>
-            <Parallax speed={0.08}>
-              <ScrollReveal
-                variant="zoom-in"
-                sx={{
-                  borderRadius: 4,
-                  overflow: 'hidden',
-                  boxShadow: `0 24px 48px ${alpha(theme.palette.common.black, 0.15)}`,
-                }}
-              >
-                <Box
-                  component="img"
-                  src="https://iili.io/3IdLevn.png"
-                  alt="Nafees Haider"
-                  sx={{
-                    width: '100%',
-                    height: 'auto',
-                    display: 'block',
-                  }}
-                />
-              </ScrollReveal>
-            </Parallax>
-          </Grid>
+        <div className="about__grid">
+          {/* ---------- Photo + cert ---------- */}
+          <motion.div
+            className="about__photo-wrap"
+            variants={slideLeft}
+            initial="hidden"
+            whileInView="show"
+            viewport={VIEWPORT}
+          >
+            <div className="about__photo">
+              <img src="https://iili.io/3IdLevn.png" alt="Nafees Haider" loading="lazy" />
+            </div>
 
-          <Grid item xs={12} md={7}>
-            <ScrollReveal variant="fade-up" delay={0.1}>
-              <Typography variant="h5" sx={{ mb: 3, fontWeight: 600 }}>
-                My Journey
-              </Typography>
-            </ScrollReveal>
-            <ScrollReveal variant="fade-up" delay={0.2}>
-              <Typography variant="body1" sx={{ mb: 3, lineHeight: 1.9, color: theme.palette.text.secondary }}>
-                As a Frontend Developer with a passion for creating exceptional web experiences,
-                I specialize in building modern, responsive, and performant web applications.
-                My expertise spans across various frontend technologies and frameworks, enabling
-                me to deliver scalable solutions that meet business objectives.
-              </Typography>
-            </ScrollReveal>
-            <ScrollReveal variant="fade-up" delay={0.32}>
-              <Typography variant="body1" sx={{ lineHeight: 1.9, color: theme.palette.text.secondary }}>
-                I focus on creating clean, efficient, and maintainable code while ensuring
-                optimal performance and user experience. My commitment to staying current with
-                industry best practices and emerging technologies allows me to deliver
-                innovative solutions that drive digital success.
-              </Typography>
-            </ScrollReveal>
-          </Grid>
-        </Grid>
+            {/* freeCodeCamp certification badge */}
+            <motion.a
+              className="wm-card wm-card--hover about__cert"
+              href="https://www.freecodecamp.org/certification/haidernafees07/responsive-web-design"
+              target="_blank"
+              rel="noopener noreferrer"
+              variants={cardReveal}
+              initial="hidden"
+              whileInView="show"
+              viewport={VIEWPORT}
+              /* hover lift handled by CSS `translate` on .wm-card--hover */
+            >
+              <span className="skill-card__icon" style={{ width: 42, height: 42, margin: 0 }}>
+                <Award size={20} />
+              </span>
+              <span>
+                <strong style={{ display: 'block', fontSize: '0.95rem' }}>
+                  Responsive Web Design
+                </strong>
+                <span style={{ color: 'var(--text-dim)', fontSize: '0.84rem' }}>
+                  freeCodeCamp Certification · Verified
+                </span>
+              </span>
+            </motion.a>
+          </motion.div>
 
-        {/* ---- Experience cards ---- */}
-        <ScrollReveal variant="fade-up">
-          <Typography variant="h5" sx={{ mb: 4, fontWeight: 600 }}>
-            Experience
-          </Typography>
-        </ScrollReveal>
-        <Grid container spacing={4}>
-          {experiences.map((experience, index) => (
-            <Grid item xs={12} sm={6} key={experience.title}>
-              <ScrollReveal variant="scale-up" delay={index * 0.12}>
-                <Paper
-                  sx={{
-                    p: 4,
-                    height: '100%',
-                    background: alpha(theme.palette.background.paper, 0.8),
-                    backdropFilter: 'blur(20px)',
-                    borderRadius: 2,
-                    border: `1px solid ${alpha(theme.palette.primary.main, 0.1)}`,
-                    transition:
-                      'transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease, background 0.4s ease',
-                    '&:hover': {
-                      transform: 'translateY(-8px)',
-                      boxShadow: `0 20px 40px ${alpha(theme.palette.common.black, 0.12)}`,
-                      background: alpha(theme.palette.background.paper, 0.95),
-                    },
-                  }}
+          {/* ---------- Bio + timeline ---------- */}
+          <motion.div
+            variants={slideRight}
+            initial="hidden"
+            whileInView="show"
+            viewport={VIEWPORT}
+          >
+            <motion.div
+              className="about__text"
+              variants={staggerContainer(0.12)}
+              initial="hidden"
+              whileInView="show"
+              viewport={VIEWPORT}
+            >
+              <motion.p variants={fadeUp}>
+                I'm <strong>Nafees Haider</strong>, a frontend developer based in{' '}
+                <MapPin size={14} style={{ display: 'inline', verticalAlign: '-2px' }} /> Islamabad,
+                Pakistan. I specialize in building modern, performant web apps with{' '}
+                <strong>React, Next.js and TypeScript</strong> — and I care about the details:
+                clean code, smooth motion, accessible UX.
+              </motion.p>
+              <motion.p variants={fadeUp}>
+                Over the last few years I've shipped business sites, crypto landing pages and
+                language-learning tools — always with a focus on responsive layouts and
+                pixel-perfect execution. Lately I've been deep in <strong>TypeScript</strong> and
+                design-system thinking.
+              </motion.p>
+            </motion.div>
+
+            {/* Experience timeline */}
+            <motion.div
+              className="timeline"
+              variants={staggerContainer(0.15, 0.1)}
+              initial="hidden"
+              whileInView="show"
+              viewport={VIEWPORT}
+            >
+              {EXPERIENCE.map((job, i) => (
+                <motion.div
+                  key={job.role}
+                  className={`tl-item ${i % 2 ? 'tl-item--green' : ''}`}
+                  variants={fadeUp}
                 >
-                  <Typography
-                    variant="h5"
-                    sx={{
-                      fontWeight: 700,
-                      mb: 2,
-                      background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.primary.light})`,
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                    }}
-                  >
-                    {experience.title}
-                  </Typography>
-                  <Typography
-                    variant="subtitle1"
-                    sx={{ color: theme.palette.primary.main, mb: 1, fontWeight: 600, opacity: 0.9 }}
-                  >
-                    {experience.company}
-                  </Typography>
-                  <Typography
-                    variant="subtitle2"
-                    sx={{ color: theme.palette.text.secondary, mb: 3, fontSize: '0.9rem', opacity: 0.8 }}
-                  >
-                    {experience.period}
-                  </Typography>
-                  <Typography
-                    variant="body1"
-                    sx={{ color: theme.palette.text.primary, lineHeight: 1.8, opacity: 0.9 }}
-                  >
-                    {experience.description}
-                  </Typography>
-                </Paper>
-              </ScrollReveal>
-            </Grid>
-          ))}
-        </Grid>
-      </Container>
-    </Box>
-  );
-};
+                  <div className="tl-role">{job.role}</div>
+                  <div className="tl-meta">{job.meta}</div>
+                  <p className="tl-desc">{job.desc}</p>
+                </motion.div>
+              ))}
+            </motion.div>
 
-export default About;
+            <motion.a
+              className="btn btn--outline"
+              href={GITHUB_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              variants={fadeUp}
+              initial="hidden"
+              whileInView="show"
+              viewport={VIEWPORT}
+              style={{ marginTop: 26 }}
+            >
+              <Download size={18} /> Explore my GitHub
+            </motion.a>
+          </motion.div>
+        </div>
+      </div>
+    </section>
+  );
+}

@@ -1,253 +1,195 @@
-import { Box, Container, Grid, Typography, Button, useTheme, alpha } from '@mui/material';
-import GitHubIcon from '@mui/icons-material/GitHub';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import { ScrollReveal, TextLineReveal, Parallax } from './ScrollReveal';
+import { useEffect, useRef } from 'react';
+import { motion } from 'framer-motion';
+import { ArrowRight, Github, MapPin, Code2, ChevronDown } from 'lucide-react';
+import { EASE, heroRise } from '../lib/motion';
+import LineMask from './LineMask';
+
+const GITHUB_URL = 'https://github.com/HaiderNafees';
 
 /**
- * HERO — cinematic entrance (plays once on load).
- * Layered depth: ambient gradient orbs drift on parallax behind
- * the portrait card; every text block staggers in on the
- * signature easing curve.
+ * HERO — MCP21 asymmetric composition.
+ * Left: masked line-by-line name reveal, gradient role, tagline,
+ * CTAs, stats. Right: portrait inside a rotating conic ring with
+ * orbiting dashed circles and floating glass chips (depth layers).
+ *
+ * PERF: Intersection Observer pauses all CSS animations (orbit rings,
+ * portrait ring, orbs) when the hero scrolls off-screen, freeing GPU
+ * compositor layers for the sections below.
  */
-const Hero = () => {
-  const theme = useTheme();
+export default function Hero() {
+  const sectionRef = useRef(null);
 
-  const scrollTo = (id) => {
+  useEffect(() => {
+    const el = sectionRef.current;
+    if (!el) return undefined;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        // When hero is not intersecting, pause all child animations
+        el.classList.toggle('hero--paused', !entry.isIntersecting);
+      },
+      { threshold: 0 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  const scrollTo = (id) =>
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' });
-  };
 
   return (
-    <Box
-      id="hero"
-      sx={{
-        minHeight: 'calc(100vh - 64px)',
-        display: 'flex',
-        alignItems: 'center',
-        position: 'relative',
-        overflow: 'hidden', /* orbs bleed to the edges — clip them */
-        pt: { xs: 10, md: 6 },
-        pb: { xs: 10, md: 4 },
-      }}
-    >
-      {/* ---- Ambient parallax orbs (background depth) ---- */}
-      <Parallax
-        speed={0.12}
+    <section className="hero" id="hero" ref={sectionRef}>
+      {/* Ambient orbs (decor) */}
+      <motion.div
         aria-hidden
-        sx={{
-          position: 'absolute',
-          top: '-10%',
-          left: '-8%',
-          width: 420,
-          height: 420,
-        }}
-      >
-        <Box
-          className="sr-orb sr-orb--float"
-          sx={{ inset: 0, background: alpha(theme.palette.primary.main, 0.55) }}
-        />
-      </Parallax>
-      <Parallax
-        speed={-0.08}
+        className="orb orb--pink"
+        style={{ width: 380, height: 380, top: '-8%', right: '-4%' }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.4 }}
+        transition={{ duration: 1.4, delay: 0.4 }}
+      />
+      <motion.div
         aria-hidden
-        sx={{
-          position: 'absolute',
-          bottom: '-15%',
-          right: '-6%',
-          width: 360,
-          height: 360,
-        }}
-      >
-        <Box
-          className="sr-orb sr-orb--float"
-          sx={{
-            inset: 0,
-            background: alpha(theme.palette.secondary.main || '#5ac8fa', 0.5),
-            animationDelay: '-4.5s',
-          }}
-        />
-      </Parallax>
+        className="orb orb--green"
+        style={{ width: 320, height: 320, bottom: '-12%', left: '-6%' }}
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.35 }}
+        transition={{ duration: 1.4, delay: 0.55 }}
+      />
 
-      <Container sx={{ position: 'relative', zIndex: 1 }}>
-        <Grid container spacing={6} alignItems="center">
-          {/* ---- Left: staggered text reveal ---- */}
-          <Grid item xs={12} md={6}>
-            {/* Eyebrow label */}
-            <Typography
-              className="sr-hero-rise"
-              variant="overline"
-              sx={{
-                color: theme.palette.primary.main,
-                letterSpacing: 3,
-                mb: 2,
-                display: 'block',
-                fontWeight: 600,
-                '--sr-delay': '0.1s',
-              }}
+      <div className="container hero__grid">
+        {/* ---------- Left: copy ---------- */}
+        <div>
+          <motion.div
+            className="hero__eyebrow"
+            {...heroRise(0.05)}
+          >
+            <span className="wm-badge">
+              <span className="hero__dot" />
+              Available for work
+            </span>
+          </motion.div>
+
+          <h1 className="hero__title">
+            <LineMask i={0}>Nafees</LineMask>
+            <LineMask i={1}>
+              <span className="section-title--grad">Haider</span>
+            </LineMask>
+          </h1>
+
+          <motion.p
+            className="hero__role"
+            {...heroRise(0.5)}
+          >
+            Frontend Developer
+          </motion.p>
+
+          <motion.p className="hero__tagline" {...heroRise(0.62)}>
+            I build fast, modern, responsive web experiences with React,
+            Next.js and TypeScript — turning ideas into polished products
+            people love to use.
+          </motion.p>
+
+          <motion.div className="hero__cta" {...heroRise(0.74)}>
+            <button className="btn btn--primary" onClick={() => scrollTo('projects')}>
+              View Projects <ArrowRight size={18} />
+            </button>
+            <a
+              className="btn btn--outline"
+              href={GITHUB_URL}
+              target="_blank"
+              rel="noopener noreferrer"
             >
-              FRONTEND DEVELOPER
-            </Typography>
+              <Github size={18} /> GitHub
+            </a>
+          </motion.div>
 
-            {/* Name — masked line-by-line slide-up */}
-            <TextLineReveal
-              component="h1"
-              text={['Nafees', 'Haider']}
-              sx={{
-                fontWeight: 800,
-                fontSize: { xs: '3.2rem', sm: '4rem', md: '4.4rem' },
-                lineHeight: 1.05,
-                letterSpacing: '-0.02em',
-                mb: 3,
-                background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.primary.light})`,
-                WebkitBackgroundClip: 'text',
-                WebkitTextFillColor: 'transparent',
-              }}
-            />
-
-            {/* Tagline */}
-            <ScrollReveal variant="fade-up" delay={0.45}>
-              <Typography
-                variant="h5"
-                sx={{ color: theme.palette.text.secondary, mb: 3, fontWeight: 500 }}
-              >
-                Frontend Engineer &nbsp;•&nbsp; React Specialist &nbsp;•&nbsp; Digital
-                Solutions
-              </Typography>
-            </ScrollReveal>
-
-            {/* Bio */}
-            <ScrollReveal variant="fade-up" delay={0.6}>
-              <Typography variant="body1" sx={{ mb: 4, maxWidth: 560, lineHeight: 1.8 }}>
-                A passionate Frontend Developer specializing in modern, responsive web
-                applications with React, Next.js, and TypeScript — delivering exceptional
-                user experiences with a focus on performance and scalability.
-              </Typography>
-            </ScrollReveal>
-
-            {/* CTAs */}
-            <ScrollReveal variant="fade-up" delay={0.75}>
-              <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
-                <Button
-                  variant="contained"
-                  size="large"
-                  onClick={() => scrollTo('projects')}
-                  sx={{
-                    px: 4,
-                    py: 1.5,
-                    borderRadius: 3,
-                    background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.primary.light})`,
-                    transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.3s ease',
-                    '&:hover': {
-                      transform: 'translateY(-3px)',
-                      boxShadow: `0 12px 28px ${alpha(theme.palette.primary.main, 0.4)}`,
-                      background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.primary.light})`,
-                    },
-                  }}
-                >
-                  View My Work
-                </Button>
-                <Button
-                  variant="outlined"
-                  size="large"
-                  onClick={() => scrollTo('contact')}
-                  sx={{
-                    px: 4,
-                    py: 1.5,
-                    borderRadius: 3,
-                    transition: 'transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease',
-                    '&:hover': { transform: 'translateY(-3px)' },
-                  }}
-                >
-                  Get in Touch
-                </Button>
-                <Button
-                  href="https://github.com/HaiderNafees"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label="GitHub profile"
-                  startIcon={<GitHubIcon />}
-                  sx={{
-                    color: theme.palette.text.primary,
-                    transition: 'color 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-                    '&:hover': { color: theme.palette.primary.main, transform: 'translateY(-3px)' },
-                  }}
-                >
-                  GitHub
-                </Button>
-              </Box>
-            </ScrollReveal>
-          </Grid>
-
-          {/* ---- Right: portrait card, zooms in with depth ---- */}
-          <Grid item xs={12} md={6}>
-            <Parallax speed={0.15}>
-              <ScrollReveal
-                variant="zoom-in"
-                delay={0.35}
-                sx={{
-                  position: 'relative',
-                  borderRadius: '24px',
-                  overflow: 'hidden',
-                  boxShadow: `0 30px 60px ${alpha(theme.palette.common.black, 0.25)}`,
+          <motion.div
+            className="hero__stats"
+            initial="hidden"
+            animate="show"
+            variants={{ hidden: {}, show: { transition: { staggerChildren: 0.12, delayChildren: 0.9 } } }}
+          >
+            {[
+              ['3+', 'Years Experience'],
+              ['15+', 'Projects Built'],
+              ['8+', 'Happy Clients'],
+            ].map(([value, label]) => (
+              <motion.div
+                key={label}
+                variants={{
+                  hidden: { opacity: 0, y: 18 },
+                  show: { opacity: 1, y: 0, transition: { duration: 0.7, ease: EASE } },
                 }}
               >
-                <Box
-                  component="img"
-                  src="https://iili.io/3IdikFt.png"
-                  alt="Nafees Haider"
-                  sx={{
-                    width: '100%',
-                    height: { xs: 320, md: 440 },
-                    objectFit: 'cover',
-                    display: 'block',
-                    filter: 'contrast(1.05) brightness(1.05)',
-                  }}
-                />
-                {/* Glossy top edge for the premium feel */}
-                <Box
-                  aria-hidden
-                  sx={{
-                    position: 'absolute',
-                    inset: 0,
-                    background: `linear-gradient(180deg, ${alpha(
-                      theme.palette.primary.main,
-                      0.12
-                    )} 0%, transparent 40%, ${alpha(theme.palette.common.black, 0.25)} 100%)`,
-                    pointerEvents: 'none',
-                  }}
-                />
-              </ScrollReveal>
-            </Parallax>
-          </Grid>
-        </Grid>
-      </Container>
+                <div className="hero__stat-value">{value}</div>
+                <div className="hero__stat-label">{label}</div>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
 
-      {/* ---- Scroll hint ---- */}
-      <ScrollReveal
-        variant="fade"
-        delay={1.4}
-        sx={{
-          position: 'absolute',
-          bottom: 24,
-          left: 0,
-          right: 0,
-          mx: 'auto', /* centered without transform — no clash with reveal CSS */
-          width: 'fit-content',
-          color: theme.palette.text.secondary,
-          display: { xs: 'none', md: 'flex' },
-          alignItems: 'center',
-          flexDirection: 'column',
-          gap: 0.5,
-          '@keyframes sr-hint': {
-            '0%, 100%': { transform: 'translateY(0)' },
-            '50%': { transform: 'translateY(8px)' },
-          },
-          '& svg': { animation: 'sr-hint 2.2s ease-in-out infinite' },
-        }}
+        {/* ---------- Right: stage with orbits ---------- */}
+        <motion.div
+          className="hero__stage"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 1, ease: EASE, delay: 0.35 }}
+        >
+          {/* Orbit rings (MCP21 decorative depth) */}
+          <div className="orbit" aria-hidden style={{ width: 470, height: 470, inset: 0, margin: 'auto' }}>
+            <span className="orbit-node" />
+          </div>
+          <div className="orbit orbit--reverse" aria-hidden style={{ width: 560, height: 560, inset: 0, margin: 'auto' }}>
+            <span className="orbit-node" style={{ background: 'linear-gradient(90deg, #22c55e, #4ade80)' }} />
+          </div>
+
+          {/* Rotating conic ring */}
+          <div className="hero__portrait-ring" aria-hidden style={{ gridArea: '1 / 1' }} />
+
+          {/* Portrait */}
+          <motion.div
+            className="hero__portrait"
+            style={{ gridArea: '1 / 1' }}
+            whileHover={{ scale: 1.03 }}
+            transition={{ duration: 0.5, ease: EASE }}
+          >
+            <img src="https://iili.io/3IdikFt.png" alt="Nafees Haider" decoding="async" />
+          </motion.div>
+
+          {/* Floating chips */}
+          <motion.div
+            className="hero__chip hero__chip--tl"
+            initial={{ opacity: 0, y: -14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.9, duration: 0.7, ease: EASE }}
+          >
+            <Code2 size={16} color="var(--wm-pink)" /> React • TypeScript
+          </motion.div>
+          <motion.div
+            className="hero__chip hero__chip--br"
+            initial={{ opacity: 0, y: 14 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 1.05, duration: 0.7, ease: EASE }}
+          >
+            <MapPin size={16} color="var(--wm-green)" /> Islamabad, PK
+          </motion.div>
+        </motion.div>
+      </div>
+
+      {/* Scroll hint */}
+      <motion.button
+        className="hero__scroll-hint"
+        onClick={() => scrollTo('about')}
+        aria-label="Scroll to About section"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5, duration: 0.8 }}
+        style={{ background: 'none', border: 'none' }}
       >
-        <ArrowDownwardIcon fontSize="small" />
-      </ScrollReveal>
-    </Box>
+        Scroll
+        <ChevronDown size={18} />
+      </motion.button>
+    </section>
   );
-};
-
-export default Hero;
+}

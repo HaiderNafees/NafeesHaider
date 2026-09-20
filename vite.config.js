@@ -5,9 +5,9 @@ export default defineConfig({
   plugins: [react()],
   server: {
     port: 5174,
-    strictPort: true
+    strictPort: true,
   },
   optimizeDeps: {
-    include: ['@emotion/react', '@emotion/styled', '@mui/material', 'framer-motion']
-  }
+    include: ['framer-motion', 'lucide-react'],
+  },
 });

@@ -1,150 +1,131 @@
-import { Box, Container, Grid, Paper, Typography, useTheme, alpha } from '@mui/material';
-import { ScrollReveal, SectionHeading } from './ScrollReveal';
+import { motion } from 'framer-motion';
+import { Atom, Braces, Wind, Layers, Boxes, Gauge } from 'lucide-react';
+import { staggerContainer, cardReveal, VIEWPORT } from '../lib/motion';
 
-/**
- * SKILLS — category cards scale up + sharpen with a stagger,
- * then each skill chip cascades in behind its card.
- * Certification (freeCodeCamp RWD) revealed last.
- */
-const Skills = () => {
-  const theme = useTheme();
-
-  const skillCategories = [
-    {
-      title: 'Frontend',
-      skills: ['React.js', 'Next.js', 'TypeScript', 'JavaScript', 'Redux', 'REST APIs'],
-    },
-    {
-      title: 'Styling & UI',
-      skills: ['Tailwind CSS', 'Material-UI', 'Responsive Design', 'CSS-in-JS', 'Design Systems', 'Figma'],
-    },
-    {
-      title: 'Backend & CMS',
-      skills: ['Node.js', 'WordPress', 'Headless CMS', 'Web Analytics', 'CI/CD', 'Git'],
-    },
-    {
-      title: 'Quality & Testing',
-      skills: ['Performance Optimization', 'Web Accessibility', 'SEO Best Practices', 'PWAs', 'Cross-browser Testing', 'Frontend Testing'],
-    },
-  ];
-
-  return (
-    <Box id="skills" sx={{ py: { xs: 8, md: 10 }, background: theme.palette.background.default }}>
-      <Container>
-        <SectionHeading text="Skills & Expertise" />
-
-        <Grid container spacing={4}>
-          {skillCategories.map((category, index) => (
-            <Grid item xs={12} sm={6} md={3} key={category.title}>
-              <ScrollReveal variant="scale-up" delay={index * 0.12}>
-                <Paper
-                  sx={{
-                    p: 3,
-                    height: '100%',
-                    background: alpha(theme.palette.background.paper, 0.5),
-                    backdropFilter: 'blur(20px)',
-                    borderRadius: 2,
-                    border: `1px solid ${alpha(theme.palette.primary.main, 0.08)}`,
-                    transition: 'background 0.3s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1)',
-                    '&:hover': {
-                      background: alpha(theme.palette.background.paper, 0.75),
-                      transform: 'translateY(-6px)',
-                    },
-                  }}
-                >
-                  <Typography
-                    variant="h6"
-                    sx={{
-                      fontWeight: 700,
-                      background: `linear-gradient(45deg, ${theme.palette.primary.main}, ${theme.palette.primary.light})`,
-                      WebkitBackgroundClip: 'text',
-                      WebkitTextFillColor: 'transparent',
-                      mb: 3,
-                    }}
-                  >
-                    {category.title}
-                  </Typography>
-
-                  <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1 }}>
-                    {category.skills.map((skill, skillIndex) => (
-                      <ScrollReveal
-                        key={skill}
-                        variant="fade-up"
-                        delay={0.15 + skillIndex * 0.06}
-                        sx={{ display: 'inline-flex' }}
-                      >
-                        <Box
-                          sx={{
-                            py: 0.75,
-                            px: 1.5,
-                            textAlign: 'center',
-                            fontSize: '0.8rem',
-                            fontWeight: 500,
-                            whiteSpace: 'nowrap',
-                            background: alpha(theme.palette.primary.main, 0.06),
-                            borderRadius: 1.5,
-                            transition: 'background 0.2s ease, transform 0.2s ease',
-                            '&:hover': {
-                              background: alpha(theme.palette.primary.main, 0.14),
-                              transform: 'translateY(-2px)',
-                            },
-                          }}
-                        >
-                          {skill}
-                        </Box>
-                      </ScrollReveal>
-                    ))}
-                  </Box>
-                </Paper>
-              </ScrollReveal>
-            </Grid>
-          ))}
-        </Grid>
-
-        {/* ---- Certification ---- */}
-        <Box sx={{ mt: 10 }}>
-          <SectionHeading text="Certifications" />
-          <Grid container justifyContent="center">
-            <Grid item xs={12} sm={8} md={6}>
-              <ScrollReveal variant="scale-up" delay={0.1}>
-                <Box
-                  component="a"
-                  href="https://www.freecodecamp.org/certification/haidernafees07/responsive-web-design"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  sx={{
-                    display: 'block',
-                    p: 3,
-                    mb: 2,
-                    borderRadius: 2,
-                    border: `1px solid ${theme.palette.divider}`,
-                    textDecoration: 'none',
-                    color: theme.palette.text.primary,
-                    background: alpha(theme.palette.background.paper, 0.5),
-                    backdropFilter: 'blur(20px)',
-                    transition:
-                      'border-color 0.3s ease, background 0.3s ease, transform 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
-                    '&:hover': {
-                      borderColor: theme.palette.primary.main,
-                      background: alpha(theme.palette.background.paper, 0.75),
-                      transform: 'translateY(-3px)',
-                    },
-                  }}
-                >
-                  <Typography variant="h6" sx={{ fontWeight: 600, mb: 1 }}>
-                    Responsive Web Design
-                  </Typography>
-                  <Typography variant="body1" sx={{ color: theme.palette.text.secondary }}>
-                    freeCodeCamp Certification
-                  </Typography>
-                </Box>
-              </ScrollReveal>
-            </Grid>
-          </Grid>
-        </Box>
-      </Container>
-    </Box>
-  );
+const FEATURED = {
+  icon: Atom,
+  title: 'React + Next.js',
+  desc: 'My daily drivers. Component architecture, hooks, server-side rendering, App Router — from marketing sites to complex dashboards.',
+  pills: ['Hooks & Context', 'App Router', 'SSR / SSG', 'React Query', 'Form Handling', 'Testing Library'],
 };
 
-export default Skills;
+const MEDIUM = [
+  {
+    icon: Braces,
+    title: 'TypeScript',
+    desc: 'Typed contracts end to end — safer refactors and self-documenting code across all recent projects.',
+  },
+  {
+    icon: Wind,
+    title: 'Tailwind CSS',
+    desc: 'Utility-first styling with custom design tokens, dark mode and responsive layouts that scale.',
+  },
+  {
+    icon: Layers,
+    title: 'Material-UI',
+    desc: 'Theming, customization and rapid accessible UI — used across several client and Web3 projects.',
+  },
+  {
+    icon: Gauge,
+    title: 'Performance & UX',
+    desc: 'Core Web Vitals, lazy loading, code-splitting and accessibility baked into every build.',
+  },
+];
+
+const SMALL = [
+  { icon: Boxes, title: 'Redux' },
+  { icon: Boxes, title: 'REST APIs' },
+  { icon: Boxes, title: 'Node.js' },
+  { icon: Boxes, title: 'WordPress' },
+  { icon: Boxes, title: 'PWA' },
+  { icon: Boxes, title: 'CI/CD' },
+];
+
+/**
+ * SKILLS — bento grid.
+ * Asymmetric layout: featured card spans wide, medium cards fill
+ * the middle band, compact pill-cards finish the floor. All cards
+ * reveal with the spec'd dim/scale → full animation, staggered.
+ */
+export default function Skills() {
+  const FeaturedIcon = FEATURED.icon;
+
+  return (
+    <section className="section" id="skills">
+      <div className="container">
+        <motion.div
+          className="section-head"
+          initial="hidden"
+          whileInView="show"
+          viewport={VIEWPORT}
+          variants={staggerContainer(0.12)}
+        >
+          <span className="wm-badge">Skills</span>
+          <h2 className="section-title section-title--grad" style={{ marginTop: 14 }}>
+            My toolbox
+          </h2>
+          <p className="section-sub">
+            The technologies I reach for to ship fast, polished and maintainable products.
+          </p>
+          <div className="accent-bar" />
+        </motion.div>
+
+        <motion.div
+          className="bento"
+          variants={staggerContainer(0.15)}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ ...VIEWPORT, amount: 0.15 }}
+        >
+          {/* Featured card — spans 7 cols on desktop */}
+          <motion.div className="wm-card wm-card--hover skill-card span-7" variants={cardReveal}>
+            <div className="skill-card__icon">
+              <FeaturedIcon size={22} />
+            </div>
+            <div className="skill-card__title">{FEATURED.title}</div>
+            <p className="skill-card__desc">{FEATURED.desc}</p>
+            <div className="pill-cloud">
+              {FEATURED.pills.map((p) => (
+                <span className="wm-pill" key={p}>{p}</span>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Compact identity card — spans 5 cols, green accent */}
+          <motion.div className="wm-card wm-card--hover skill-card skill-card--green span-5" variants={cardReveal}>
+            <div className="skill-card__icon">
+              <Boxes size={22} />
+            </div>
+            <div className="skill-card__title">Also in rotation</div>
+            <p className="skill-card__desc">
+              Tools and libraries that round out my workflow day to day.
+            </p>
+            <div className="pill-cloud">
+              {SMALL.map(({ icon: Icon, title }) => (
+                <span className="wm-pill" key={title}>
+                  <Icon size={14} style={{ color: 'var(--wm-green)' }} />
+                  {title}
+                </span>
+              ))}
+            </div>
+          </motion.div>
+
+          {/* Medium cards — 4 cols each */}
+          {MEDIUM.map(({ icon: Icon, title, desc }) => (
+            <motion.div
+              key={title}
+              className="wm-card wm-card--hover skill-card span-4"
+              variants={cardReveal}
+            >
+              <div className="skill-card__icon">
+                <Icon size={22} />
+              </div>
+              <div className="skill-card__title">{title}</div>
+              <p className="skill-card__desc">{desc}</p>
+            </motion.div>
+          ))}
+        </motion.div>
+      </div>
+    </section>
+  );
+}

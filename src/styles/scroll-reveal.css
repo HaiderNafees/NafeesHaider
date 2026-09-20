@@ -1,0 +1,257 @@
+/* ============================================================
+   SCROLL-REVEAL ANIMATION SYSTEM
+   Premium, cinematic reveal effects inspired by product-launch
+   pages (Infinix NOTE 60 Pro style).
+   ------------------------------------------------------------
+   HOW IT WORKS
+   - Elements start in a hidden state (opacity 0 + transform).
+   - ScrollReveal.jsx adds `.is-visible` when they enter the
+     viewport (IntersectionObserver, ~90% browser support).
+   - Everything transitions on a shared cinematic easing curve.
+   - `prefers-reduced-motion` disables all motion instantly.
+   ============================================================ */
+
+:root {
+  /* ---- Motion design tokens -------------------------------- */
+  --sr-ease: cubic-bezier(0.16, 1, 0.3, 1); /* signature ease-out */
+  --sr-ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
+  --sr-duration: 0.8s;        /* 600–800ms spec */
+  --sr-stagger: 0.12s;        /* 100–150ms spec */
+  --sr-distance: 40px;        /* travel distance for slides */
+  --sr-blur: 12px;            /* blur amount for card reveals */
+
+  /* Parallax offset (px) — updated by useParallax() via JS */
+  --parallax-y: 0px;
+}
+
+/* ------------------------------------------------------------
+   BASE REVEAL STATE
+   Every [data-sr] element is hidden until `.is-visible` lands.
+   ------------------------------------------------------------ */
+[data-sr] {
+  opacity: 0;
+  will-change: opacity, transform, filter;
+  transition:
+    opacity var(--sr-duration) var(--sr-ease),
+    transform var(--sr-duration) var(--sr-ease),
+    filter var(--sr-duration) var(--sr-ease);
+  /* Delay can come from the --sr-delay custom property
+     (set inline by ScrollReveal via the `delay` prop). */
+  transition-delay: var(--sr-delay, 0s);
+}
+
+/* Stagger helper: siblings auto-increment their delay.
+   ScrollReveal adds inline --sr-delay instead when a prop is used. */
+[data-sr-stagger] > * {
+  transition-delay: calc(var(--sr-delay, 0s) + var(--sr-stagger));
+}
+
+/* ------------------------------------------------------------
+   VARIANTS
+   ------------------------------------------------------------ */
+
+/* fadeInUp — text blocks, sections */
+[data-sr='fade-up'] {
+  transform: translate3d(0, var(--sr-distance), 0);
+}
+
+/* fadeIn — pure opacity (images, subtle elements) */
+[data-sr='fade'] { /* opacity 0 only, nothing extra */ }
+
+/* scaleUp — cards: scaled down + blurred, sharpens on entry */
+[data-sr='scale-up'] {
+  transform: scale(0.92) translate3d(0, var(--sr-distance), 0);
+  filter: blur(var(--sr-blur));
+}
+
+/* slideLeft / slideRight — alternating timeline items */
+[data-sr='slide-left'] {
+  transform: translate3d(-60px, 0, 0);
+}
+[data-sr='slide-right'] {
+  transform: translate3d(60px, 0, 0);
+}
+
+/* zoomIn — big hero imagery */
+[data-sr='zoom-in'] {
+  transform: scale(1.08);
+  filter: blur(6px);
+}
+
+/* ------------------------------------------------------------
+   VISIBLE STATE — one rule reveals every variant
+   ------------------------------------------------------------ */
+[data-sr].is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  filter: blur(0);
+}
+
+/* ------------------------------------------------------------
+   TEXT LINE MASK REVEAL
+   Each line sits in an overflow-hidden wrapper and slides up
+   from below the fold — the signature "product page" text effect.
+   ------------------------------------------------------------ */
+.sr-line-mask {
+  display: block;
+  overflow: hidden; /* clips the line while it's below the fold */
+  padding-bottom: 0.08em; /* keeps descenders (g, y, p) unclipped */
+  margin-bottom: -0.08em;
+}
+
+.sr-line {
+  display: block;
+  transform: translate3d(0, 110%, 0) rotate(2deg);
+  transform-origin: left bottom;
+  opacity: 0;
+  transition:
+    transform var(--sr-duration) var(--sr-ease),
+    opacity var(--sr-duration) var(--sr-ease);
+  transition-delay: var(--sr-delay, 0s);
+  will-change: transform, opacity;
+}
+
+.is-visible .sr-line,
+.sr-line.is-visible {
+  transform: translate3d(0, 0, 0) rotate(0deg);
+  opacity: 1;
+}
+
+/* ------------------------------------------------------------
+   PARALLAX DEPTH
+   useParallax() writes translateY into --parallax-y; layers
+   declare their own depth via --parallax-speed.
+   ------------------------------------------------------------ */
+.sr-parallax {
+  transform: translate3d(0, var(--parallax-y), 0) scale(var(--parallax-scale, 1));
+  will-change: transform;
+}
+
+/* Decorative gradient orbs behind the hero */
+.sr-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(90px);
+  opacity: 0.35;
+  pointer-events: none;
+  will-change: transform;
+}
+
+/* Slow ambient float for orbs */
+@keyframes sr-float {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -24px, 0); }
+}
+
+.sr-orb--float {
+  animation: sr-float 9s ease-in-out infinite;
+}
+
+/* ------------------------------------------------------------
+   HERO ENTRANCE (runs once on load, not scroll-triggered)
+   ------------------------------------------------------------ */
+@keyframes sr-hero-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 48px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.sr-hero-rise {
+  opacity: 0;
+  animation: sr-hero-rise 0.9s var(--sr-ease) forwards;
+  animation-delay: var(--sr-delay, 0s);
+}
+
+/* Subtle infinite sheen for the primary CTA */
+@keyframes sr-sheen {
+  0% { background-position: -200% center; }
+  100% { background-position: 200% center; }
+}
+
+/* ------------------------------------------------------------
+   SECTION HEADING ACCENT
+   Small gradient bar that grows in above section titles.
+   ------------------------------------------------------------ */
+.sr-heading-accent {
+  width: 64px;
+  height: 4px;
+  border-radius: 2px;
+  background: linear-gradient(90deg, #0a84ff, #5ac8fa);
+  transform: scaleX(0);
+  transform-origin: left center;
+  transition: transform 0.8s var(--sr-ease) 0.2s;
+  margin-inline: auto;
+}
+
+.is-visible .sr-heading-accent,
+.sr-heading-accent.is-visible {
+  transform: scaleX(1);
+}
+
+/* ------------------------------------------------------------
+   REDUCED MOTION — skip all animation, show content instantly.
+   Both the media query AND the .sr-reduced-motion class
+   (toggled by JS) are covered, so content can never get stuck.
+   ------------------------------------------------------------ */
+@media (prefers-reduced-motion: reduce) {
+  [data-sr],
+  [data-sr].is-visible,
+  .sr-line,
+  .is-visible .sr-line,
+  .sr-hero-rise,
+  .sr-heading-accent,
+  .sr-orb--float {
+    opacity: 1 !important;
+    transform: none !important;
+    filter: none !important;
+    transition: none !important;
+    animation: none !important;
+  }
+
+  .sr-parallax {
+    transform: none !important;
+  }
+}
+
+/* JS fallback class — mirrors the media query when the user
+   preference changes at runtime. */
+.sr-reduced-motion [data-sr],
+.sr-reduced-motion [data-sr].is-visible,
+.sr-reduced-motion .sr-line,
+.sr-reduced-motion .sr-hero-rise,
+.sr-reduced-motion .sr-heading-accent,
+.sr-reduced-motion .sr-parallax,
+.sr-reduced-motion .sr-orb--float {
+  opacity: 1 !important;
+  transform: none !important;
+  filter: none !important;
+  transition: none !important;
+  animation: none !important;
+}
+
+/* ------------------------------------------------------------
+   GLOBAL POLISH
+   ------------------------------------------------------------ */
+html {
+  scroll-behavior: smooth;
+}
+
+::selection {
+  background: rgba(10, 132, 255, 0.35);
+}
+
+/* Slim, theme-agnostic scrollbar */
+::-webkit-scrollbar { width: 10px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(128, 128, 128, 0.4);
+  border-radius: 5px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(128, 128, 128, 0.6);
+}

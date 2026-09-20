@@ -1,26 +1,35 @@
-import { AppBar, Box, Button, IconButton, Stack, Toolbar, Typography, useTheme, useMediaQuery, Drawer, List, ListItem, ListItemText, ListItemIcon, alpha } from '@mui/material';
-import { motion } from 'framer-motion';
+import {
+  AppBar,
+  Box,
+  Button,
+  IconButton,
+  Stack,
+  Toolbar,
+  Typography,
+  useTheme,
+  useMediaQuery,
+  Drawer,
+  List,
+  ListItem,
+  ListItemText,
+  alpha,
+} from '@mui/material';
 import Brightness4Icon from '@mui/icons-material/Brightness4';
 import Brightness7Icon from '@mui/icons-material/Brightness7';
 import MenuIcon from '@mui/icons-material/Menu';
-import HomeIcon from '@mui/icons-material/Home';
-import PersonIcon from '@mui/icons-material/Person';
-import CodeIcon from '@mui/icons-material/Code';
-import WorkIcon from '@mui/icons-material/Work';
-import EmailIcon from '@mui/icons-material/Email';
 import { useState } from 'react';
 
+/**
+ * NAVBAR — brand and nav items fade in on load with a subtle
+ * stagger (load-time, not scroll-triggered). Theme toggle,
+ * mobile drawer and smooth scrolling all preserved.
+ */
 const Navbar = ({ isDarkMode, toggleTheme }) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const [mobileOpen, setMobileOpen] = useState(false);
 
-  const navItems = [
-    { text: 'About' },
-    { text: 'Skills' },
-    { text: 'Projects' },
-    { text: 'Contact' }
-  ];
+  const navItems = ['About', 'Skills', 'Projects', 'Contact'];
 
   const scrollToSection = (sectionId) => {
     const element = document.getElementById(sectionId.toLowerCase());
@@ -35,14 +44,13 @@ const Navbar = ({ isDarkMode, toggleTheme }) => {
         {navItems.map((item) => (
           <ListItem
             button
-            key={item.text}
+            key={item}
             onClick={() => {
-              scrollToSection(item.text);
+              scrollToSection(item);
               setMobileOpen(false);
             }}
           >
-
-            <ListItemText primary={item.text} />
+            <ListItemText primary={item} />
           </ListItem>
         ))}
       </List>
@@ -57,29 +65,25 @@ const Navbar = ({ isDarkMode, toggleTheme }) => {
         backdropFilter: 'blur(10px)',
         boxShadow: 'none',
         borderBottom: `1px solid ${theme.palette.divider}`,
-        zIndex: theme.zIndex.drawer + 1
+        zIndex: theme.zIndex.drawer + 1,
       }}
     >
       <Toolbar>
-        <motion.div
-          initial={{ opacity: 0, x: -20 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.5 }}
+        <Typography
+          variant="h6"
+          component="div"
+          sx={{
+            fontWeight: 600,
+            color: theme.palette.text.primary,
+            display: 'flex',
+            alignItems: 'center',
+            gap: 1,
+            opacity: 0,
+            animation: 'sr-hero-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards',
+          }}
         >
-          <Typography
-            variant="h6"
-            component="div"
-            sx={{
-              fontWeight: 600,
-              color: theme.palette.text.primary,
-              display: 'flex',
-              alignItems: 'center',
-              gap: 1
-            }}
-          >
-            Nafees Haider
-          </Typography>
-        </motion.div>
+          Nafees Haider
+        </Typography>
 
         <Box sx={{ flexGrow: 1 }} />
 
@@ -97,8 +101,8 @@ const Navbar = ({ isDarkMode, toggleTheme }) => {
                 color: isDarkMode ? theme.palette.common.white : theme.palette.text.primary,
                 '&:hover': {
                   bgcolor: isDarkMode ? alpha(theme.palette.common.white, 0.2) : alpha(theme.palette.primary.main, 0.2),
-                  transform: 'scale(1.05)'
-                }
+                  transform: 'scale(1.05)',
+                },
               }}
             >
               {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}
@@ -110,9 +114,7 @@ const Navbar = ({ isDarkMode, toggleTheme }) => {
               onClick={() => setMobileOpen(!mobileOpen)}
               sx={{
                 color: theme.palette.text.primary,
-                '&:hover': {
-                  color: theme.palette.primary.main,
-                }
+                '&:hover': { color: theme.palette.primary.main },
               }}
             >
               <MenuIcon />
@@ -122,9 +124,7 @@ const Navbar = ({ isDarkMode, toggleTheme }) => {
               anchor="right"
               open={mobileOpen}
               onClose={() => setMobileOpen(false)}
-              ModalProps={{
-                keepMounted: true,
-              }}
+              ModalProps={{ keepMounted: true }}
               sx={{
                 '& .MuiDrawer-paper': {
                   boxSizing: 'border-box',
@@ -138,24 +138,19 @@ const Navbar = ({ isDarkMode, toggleTheme }) => {
           </>
         ) : (
           <Stack direction="row" spacing={2} alignItems="center">
-            {navItems.map((item) => (
-              <motion.div
-                key={item.text}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
+            {navItems.map((item, index) => (
+              <Button
+                key={item}
+                onClick={() => scrollToSection(item)}
+                sx={{
+                  color: theme.palette.text.primary,
+                  opacity: 0,
+                  animation: `sr-hero-rise 0.7s cubic-bezier(0.16, 1, 0.3, 1) ${0.2 + index * 0.08}s forwards`,
+                  '&:hover': { color: theme.palette.primary.main },
+                }}
               >
-                <Button
-                  onClick={() => scrollToSection(item.text)}
-                  sx={{
-                    color: theme.palette.text.primary,
-                    '&:hover': {
-                      color: theme.palette.primary.main,
-                    },
-                  }}
-                >
-                  {item.text}
-                </Button>
-              </motion.div>
+                {item}
+              </Button>
             ))}
             <IconButton
               onClick={toggleTheme}
@@ -165,8 +160,8 @@ const Navbar = ({ isDarkMode, toggleTheme }) => {
                 transition: 'all 0.2s ease-in-out',
                 '&:hover': {
                   bgcolor: alpha(theme.palette.primary.main, 0.1),
-                  transform: 'scale(1.05)'
-                }
+                  transform: 'scale(1.05)',
+                },
               }}
             >
               {isDarkMode ? <Brightness7Icon /> : <Brightness4Icon />}

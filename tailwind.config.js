@@ -4,13 +4,14 @@ export default {
   theme: {
     extend: {
       colors: {
+        // Bound to CSS custom properties — flip automatically in dark mode
         navy: {
-          DEFAULT: '#0A1E3C',
-          light: '#0F2A54',
-          hover: '#1E3A6E',
+          DEFAULT: 'var(--text)',
+          light: 'var(--accent-text)',
+          hover: 'var(--accent-hover)',
         },
-        muted: '#4A5568',
-        mist: '#F7FAFC',
+        muted: 'var(--muted)',
+        mist: 'var(--bg-soft)',
       },
       fontFamily: {
         serif: ['Playfair Display', 'Georgia', 'serif'],

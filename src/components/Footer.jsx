@@ -14,7 +14,7 @@ export default function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-navy/10 bg-white py-12">
+    <footer className="site-footer py-12">
       <div className="container flex flex-col items-center gap-8 text-center">
         <blockquote className="footer-quote">
           &ldquo;The only way to do great work is to love what you do.&rdquo;

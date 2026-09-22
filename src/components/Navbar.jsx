@@ -31,7 +31,7 @@ export default function Navbar() {
               window.scrollTo({ top: 0, behavior: 'smooth' });
             }}
           >
-            NH<span style={{ color: '#0F2A54' }}>.</span>
+            NH<span style={{ color: 'var(--accent-text)' }}>.</span>
           </a>
 
           <ul className="hidden md:flex items-center gap-1 list-none">

@@ -37,12 +37,12 @@ export default function Testimonials() {
           {TESTIMONIALS.map((testimonial, i) => (
             <ScrollReveal key={testimonial.name} delay={i * 0.1}>
               <figure className="portfolio-card flex h-full flex-col p-8">
-                <Quote size={24} className="mb-4 text-navy/20" />
+                <Quote size={24} className="quote-mark mb-4" />
                 <blockquote className="mb-6 flex-1 text-[0.95rem] leading-[1.8] text-muted">
                   &ldquo;{testimonial.quote}&rdquo;
                 </blockquote>
                 <figcaption className="flex items-center gap-3.5">
-                  <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-navy-light text-[0.85rem] font-bold text-white">
+                  <div className="avatar flex h-11 w-11 shrink-0 items-center justify-center rounded-full text-[0.85rem] font-bold">
                     {testimonial.initials}
                   </div>
                   <div>

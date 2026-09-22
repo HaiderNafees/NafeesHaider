@@ -47,7 +47,7 @@ export default function GitHubActivity() {
                 alt="Nafees Haider GitHub avatar"
                 width={72}
                 height={72}
-                className="h-[72px] w-[72px] rounded-full border-2 border-navy/10 object-cover"
+                className="avatar-ring h-[72px] w-[72px] rounded-full object-cover"
               />
               <div>
                 <div className="mb-1 flex items-center gap-2">

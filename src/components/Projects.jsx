@@ -4,20 +4,22 @@ import ScrollReveal from './ScrollReveal';
 const PROJECTS = [
   {
     title: 'HSK App',
-    url: 'github.com/HaiderNafees/hskapp',
+    url: 'hskapp-iota.vercel.app',
     description:
       'HSK language-learning platform — structured vocabulary and quiz practice across HSK levels, built to make Chinese proficiency study engaging and trackable.',
     tech: ['TypeScript'],
     github: 'https://github.com/HaiderNafees/hskapp',
+    live: 'https://hskapp-iota.vercel.app/',
     isNew: true,
   },
   {
     title: 'ElysianThreads',
-    url: 'github.com/HaiderNafees/ElysianThreads',
+    url: 'elysianthreads.vercel.app',
     description:
       'Fashion & lifestyle platform — product browsing, curated collections and a polished, responsive storefront experience.',
     tech: ['TypeScript'],
     github: 'https://github.com/HaiderNafees/ElysianThreads',
+    live: 'https://elysianthreads.vercel.app/',
   },
   {
     title: 'Neko Coin',
@@ -51,7 +53,6 @@ const PROJECTS = [
 const JS_TOOLS = [
   { title: 'UniversityTest', github: 'https://github.com/HaiderNafees/universitytest' },
   { title: 'HTMLQuiz', github: 'https://github.com/HaiderNafees/htmlquiz' },
-  { title: 'Sorry', github: 'https://github.com/HaiderNafees/sorry' },
 ];
 
 /** Browser-chrome preview card: dots + URL bar + abstract page mock. */
@@ -96,9 +97,7 @@ export default function Projects() {
                       {project.title}
                     </h3>
                     {project.isNew && (
-                      <span className="rounded-full bg-navy/10 px-3 py-1 text-[0.7rem] font-bold uppercase tracking-widest text-navy-light">
-                        New · Sep 2026
-                      </span>
+                      <span className="badge-new">New · Sep 2026</span>
                     )}
                   </div>
 

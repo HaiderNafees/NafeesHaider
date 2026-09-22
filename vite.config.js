@@ -8,6 +8,6 @@ export default defineConfig({
     strictPort: true,
   },
   optimizeDeps: {
-    include: ['framer-motion', 'lucide-react'],
+    include: ['lucide-react'],
   },
 });

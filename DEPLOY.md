@@ -1,6 +1,6 @@
 # Deploy Guide — nafeeshaider.vercel.app
 
-The site is a **Vite + React** app wired to **Vercel** via GitHub.
+The site is a **Vite + React (JavaScript)** app wired to **Vercel** via GitHub.
 Pushing to `main` triggers an automatic build & deploy.
 
 ---
@@ -9,7 +9,7 @@ Pushing to `main` triggers an automatic build & deploy.
 
 ```bash
 git add -A
-git commit -m "Redesign: Watermelon UI + MCP21 theme, preloader, bento grids"
+git commit -m "Redesign: white + deep navy editorial theme, scroll-reveal animations"
 git push origin main
 ```
 
@@ -41,6 +41,7 @@ Vercel keeps every deployment. In the Vercel dashboard:
 
 ## Notes
 
-- Dependencies are minimal: `framer-motion` (animations) + `lucide-react` (icons).
+- Dependencies are minimal: `lucide-react` (icons) + `tailwindcss` (styling).
+- Scroll animations use the native Intersection Observer — no animation libraries.
 - No environment variables are required — the contact form posts directly to Formspree.
-- Fonts load from Google Fonts (`Inter`), preconnected in `index.html`.
+- Fonts load from Google Fonts (`Playfair Display` + `Inter`), preconnected in `index.html`.

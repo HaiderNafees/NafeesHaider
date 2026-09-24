@@ -183,6 +183,23 @@ a {
 }
 
 /* ============================================================
+   FALLING STARS — fixed canvas behind all page content
+   ============================================================ */
+.falling-stars {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Keep page content painted above the star canvas */
+main,
+.site-footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* ============================================================
    TYPOGRAPHY
    ============================================================ */
 .section-heading {

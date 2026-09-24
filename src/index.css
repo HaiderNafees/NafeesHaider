@@ -763,6 +763,25 @@ main,
   align-items: center;
 }
 
+/* Project preview + title open the live site in a new tab */
+.project-frame-link {
+  display: block;
+  border-radius: 16px;
+  cursor: pointer;
+}
+.project-frame-link:focus-visible {
+  outline: 2px solid var(--accent-text);
+  outline-offset: 4px;
+}
+
+.project-title-link {
+  color: inherit;
+  transition: color 0.25s ease;
+}
+.project-title-link:hover {
+  color: var(--accent-text);
+}
+
 @media (max-width: 860px) {
   .project-row {
     grid-template-columns: 1fr;

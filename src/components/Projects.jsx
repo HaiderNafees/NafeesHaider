@@ -106,18 +106,33 @@ export default function Projects() {
           {PROJECTS.map((project, i) => (
             <ScrollReveal key={project.title} delay={(i % 2) * 0.1}>
               <div className="project-row">
-                {/* Left: browser-style preview with live iframe */}
-                <BrowserFrame
-                  url={project.url}
-                  letter={project.title.charAt(0)}
-                  live={project.live}
-                />
+                {/* Left: browser-style preview — clicking opens the live site */}
+                <a
+                  href={project.live || project.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="project-frame-link"
+                  aria-label={`Open ${project.title} in a new tab`}
+                >
+                  <BrowserFrame
+                    url={project.url}
+                    letter={project.title.charAt(0)}
+                    live={project.live}
+                  />
+                </a>
 
                 {/* Right: project info */}
                 <div>
                   <div className="flex flex-wrap items-center gap-3">
                     <h3 className="font-serif text-2xl font-bold text-navy md:text-[1.75rem]">
-                      {project.title}
+                      <a
+                        href={project.live || project.github}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="project-title-link"
+                      >
+                        {project.title}
+                      </a>
                     </h3>
                     {project.isNew && (
                       <span className="badge-new">New · Sep 2026</span>

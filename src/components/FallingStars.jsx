@@ -7,7 +7,7 @@ import { useEffect, useRef } from 'react';
  * dark themes automatically. Skipped entirely for reduced motion.
  */
 
-const MAX_STARS = 12;
+const MAX_STARS = 30;
 
 function hexToRgb(hex) {
   const match = /^#?([\da-f]{2})([\da-f]{2})([\da-f]{2})$/i.exec(hex.trim());
@@ -61,8 +61,8 @@ export default function FallingStars() {
         dir,
         vx: Math.cos(angle) * speed * dir,
         vy: Math.sin(angle) * speed,
-        len: 80 + Math.random() * 140,
-        width: 0.8 + Math.random() * 1.4,
+        len: 45 + Math.random() * 80,
+        width: 0.4 + Math.random() * 0.7,
         life: 0,
         maxLife: 1.4 + Math.random() * 1.8,
         rgb: starColor(),
@@ -72,7 +72,7 @@ export default function FallingStars() {
     };
 
     // A few stars already mid-flight so the sky is alive on first paint.
-    for (let i = 0; i < 3; i += 1) {
+    for (let i = 0; i < 8; i += 1) {
       const s = spawnStar(true);
       s.life = Math.random() * s.maxLife * 0.5;
       stars.push(s);
@@ -84,8 +84,12 @@ export default function FallingStars() {
 
       spawnTimer -= dt;
       if (spawnTimer <= 0) {
-        if (stars.length < MAX_STARS) stars.push(spawnStar());
-        spawnTimer = 0.3 + Math.random() * 0.9;
+        // Often spawn in small bursts so several stars fall together.
+        const burst = 1 + Math.floor(Math.random() * 3);
+        for (let i = 0; i < burst && stars.length < MAX_STARS; i += 1) {
+          stars.push(spawnStar());
+        }
+        spawnTimer = 0.12 + Math.random() * 0.35;
       }
 
       ctx.clearRect(0, 0, width, height);
@@ -116,7 +120,7 @@ export default function FallingStars() {
 
         const trail = ctx.createLinearGradient(tailX, tailY, s.x, s.y);
         trail.addColorStop(0, `rgba(${r}, ${g}, ${b}, 0)`);
-        trail.addColorStop(1, `rgba(${r}, ${g}, ${b}, ${0.8 * alpha})`);
+        trail.addColorStop(1, `rgba(${r}, ${g}, ${b}, ${0.7 * alpha})`);
 
         ctx.strokeStyle = trail;
         ctx.lineWidth = s.width;
@@ -128,10 +132,10 @@ export default function FallingStars() {
         // Glowing head
         ctx.save();
         ctx.shadowColor = `rgba(${r}, ${g}, ${b}, ${alpha})`;
-        ctx.shadowBlur = 10;
+        ctx.shadowBlur = 5;
         ctx.fillStyle = `rgba(${r}, ${g}, ${b}, ${alpha})`;
         ctx.beginPath();
-        ctx.arc(s.x, s.y, s.width * 1.4, 0, Math.PI * 2);
+        ctx.arc(s.x, s.y, Math.max(s.width * 1.2, 0.7), 0, Math.PI * 2);
         ctx.fill();
         ctx.restore();
       }

@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Menu, X } from 'lucide-react';
+import ThemeToggle from './ThemeToggle';
 
 const NAV_LINKS = ['About', 'Experience', 'Projects', 'Skills', 'Contact'];
 
@@ -52,6 +53,7 @@ export default function Navbar() {
           </ul>
 
           <div className="flex items-center gap-3">
+            <ThemeToggle />
             <a
               href="https://github.com/HaiderNafees"
               target="_blank"

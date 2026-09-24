@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Github, ExternalLink } from 'lucide-react';
 import ScrollReveal from './ScrollReveal';
 
@@ -55,8 +56,14 @@ const JS_TOOLS = [
   { title: 'HTMLQuiz', github: 'https://github.com/HaiderNafees/htmlquiz' },
 ];
 
-/** Browser-chrome preview card: dots + URL bar + abstract page mock. */
-function BrowserFrame({ url, letter }) {
+/**
+ * Browser-chrome preview card: dots + URL bar + live iframe of the
+ * deployed site. An abstract mock sits behind the iframe and shows
+ * while the preview loads (lazy) or if the site blocks embedding.
+ */
+function BrowserFrame({ url, letter, live }) {
+  const [loaded, setLoaded] = useState(false);
+
   return (
     <div className="browser-frame">
       <div className="browser-bar">
@@ -66,10 +73,22 @@ function BrowserFrame({ url, letter }) {
         <span className="browser-url">{url}</span>
       </div>
       <div className="browser-view">
-        <span className="browser-letter">{letter}</span>
-        <div className="browser-mock-title" />
-        <div className="browser-mock-line" />
-        <div className="browser-mock-line browser-mock-line--short" />
+        <div className="browser-fallback" aria-hidden="true">
+          <span className="browser-letter">{letter}</span>
+          <div className="browser-mock-title" />
+          <div className="browser-mock-line" />
+          <div className="browser-mock-line browser-mock-line--short" />
+        </div>
+        {live && (
+          <iframe
+            src={live}
+            title={`${url} — live preview`}
+            loading="lazy"
+            referrerPolicy="no-referrer"
+            className={`browser-iframe ${loaded ? 'is-loaded' : ''}`}
+            onLoad={() => setLoaded(true)}
+          />
+        )}
       </div>
     </div>
   );
@@ -87,8 +106,12 @@ export default function Projects() {
           {PROJECTS.map((project, i) => (
             <ScrollReveal key={project.title} delay={(i % 2) * 0.1}>
               <div className="project-row">
-                {/* Left: browser-style preview */}
-                <BrowserFrame url={project.url} letter={project.title.charAt(0)} />
+                {/* Left: browser-style preview with live iframe */}
+                <BrowserFrame
+                  url={project.url}
+                  letter={project.title.charAt(0)}
+                  live={project.live}
+                />
 
                 {/* Right: project info */}
                 <div>

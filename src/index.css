@@ -5,8 +5,10 @@
 /* ============================================================
    NAFEES HAIDER PORTFOLIO — DESIGN SYSTEM
    White + deep navy editorial theme.
-   Dark mode follows the OS via prefers-color-scheme — only the
-   tokens below flip; every component consumes the same vars.
+   Dark mode is driven by <html data-theme="dark"> — a tiny inline
+   script in index.html applies the stored choice (or the OS
+   preference) before first paint; only the tokens below flip;
+   every component consumes the same vars.
    ============================================================ */
 
 :root {
@@ -66,59 +68,62 @@
   --font-serif: 'Playfair Display', Georgia, serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
   --nav-h: 80px;
+  color-scheme: light;
 }
 
 /* ============================================================
-   DARK THEME — follows the system preference automatically
+   DARK THEME — applied via <html data-theme="dark">
+   The stored choice (or the OS preference as the default) is set
+   by a small inline script in index.html before first paint, so
+   the theme never flashes on load.
    ============================================================ */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --bg: #0a1e3c;
-    --bg-soft: #081a3a;
-    --surface: #0f2a54;
-    --surface-2: #0b2148;
+:root[data-theme='dark'] {
+  --bg: #0a1e3c;
+  --bg-soft: #081a3a;
+  --surface: #0f2a54;
+  --surface-2: #0b2148;
 
-    --text: #f1f5f9;
-    --muted: #a6b4c8;
-    --accent-text: #9dbdf0;
+  --text: #f1f5f9;
+  --muted: #a6b4c8;
+  --accent-text: #9dbdf0;
 
-    --accent: #ffffff;
-    --accent-hover: #e2e8f0;
-    --on-accent: #0a1e3c;
+  --accent: #ffffff;
+  --accent-hover: #e2e8f0;
+  --on-accent: #0a1e3c;
 
-    --line: rgba(255, 255, 255, 0.12);
-    --line-soft: rgba(255, 255, 255, 0.07);
-    --line-strong: rgba(255, 255, 255, 0.28);
-    --wash: rgba(255, 255, 255, 0.06);
-    --wash-2: rgba(255, 255, 255, 0.1);
-    --hover-wash: rgba(255, 255, 255, 0.06);
-    --ring: rgba(255, 255, 255, 0.12);
-    --badge-wash: rgba(255, 255, 255, 0.12);
-    --icon-ghost: rgba(255, 255, 255, 0.22);
-    --ghost: rgba(255, 255, 255, 0.2);
-    --sep: rgba(255, 255, 255, 0.3);
+  --line: rgba(255, 255, 255, 0.12);
+  --line-soft: rgba(255, 255, 255, 0.07);
+  --line-strong: rgba(255, 255, 255, 0.28);
+  --wash: rgba(255, 255, 255, 0.06);
+  --wash-2: rgba(255, 255, 255, 0.1);
+  --hover-wash: rgba(255, 255, 255, 0.06);
+  --ring: rgba(255, 255, 255, 0.12);
+  --badge-wash: rgba(255, 255, 255, 0.12);
+  --icon-ghost: rgba(255, 255, 255, 0.22);
+  --ghost: rgba(255, 255, 255, 0.2);
+  --sep: rgba(255, 255, 255, 0.3);
 
-    --preview-grad: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.11));
-    --preview-letter: rgba(255, 255, 255, 0.28);
-    --preview-title: rgba(255, 255, 255, 0.2);
-    --preview-line: rgba(255, 255, 255, 0.12);
-    --browser-dot: rgba(255, 255, 255, 0.2);
+  --preview-grad: linear-gradient(135deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.11));
+  --preview-letter: rgba(255, 255, 255, 0.28);
+  --preview-title: rgba(255, 255, 255, 0.2);
+  --preview-line: rgba(255, 255, 255, 0.12);
+  --browser-dot: rgba(255, 255, 255, 0.2);
 
-    --field-bg: #0b2148;
-    --field-border: rgba(255, 255, 255, 0.14);
-    --placeholder: #7e90a8;
+  --field-bg: #0b2148;
+  --field-border: rgba(255, 255, 255, 0.14);
+  --placeholder: #7e90a8;
 
-    --nav-scrolled: rgba(8, 26, 58, 0.92);
-    --menu-bg: rgba(8, 26, 58, 0.98);
-    --scroll-track: #081a3a;
-    --scroll-thumb: rgba(255, 255, 255, 0.25);
-    --scroll-thumb-hover: rgba(255, 255, 255, 0.4);
-    --sel-bg: rgba(157, 189, 240, 0.35);
-    --shadow-soft: rgba(0, 0, 0, 0.45);
-    --shadow-strong: rgba(0, 0, 0, 0.55);
-    --shadow-frame: rgba(0, 0, 0, 0.5);
-    --shadow-frame-hover: rgba(0, 0, 0, 0.65);
-  }
+  --nav-scrolled: rgba(8, 26, 58, 0.92);
+  --menu-bg: rgba(8, 26, 58, 0.98);
+  --scroll-track: #081a3a;
+  --scroll-thumb: rgba(255, 255, 255, 0.25);
+  --scroll-thumb-hover: rgba(255, 255, 255, 0.4);
+  --sel-bg: rgba(157, 189, 240, 0.35);
+  --shadow-soft: rgba(0, 0, 0, 0.45);
+  --shadow-strong: rgba(0, 0, 0, 0.55);
+  --shadow-frame: rgba(0, 0, 0, 0.5);
+  --shadow-frame-hover: rgba(0, 0, 0, 0.65);
+  color-scheme: dark;
 }
 
 html {
@@ -133,7 +138,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   overflow-x: hidden;
-  /* Smooth, cheap cross-fade when the OS theme switches */
+  /* Smooth, cheap cross-fade when the theme toggles */
   transition: background-color 0.4s ease, color 0.4s ease;
 }
 
@@ -295,6 +300,45 @@ a {
   background: var(--surface);
   color: var(--text);
   cursor: pointer;
+}
+
+/* ---- Theme toggle (light / dark) ---- */
+.theme-toggle {
+  display: flex;
+  width: 40px;
+  height: 40px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition: border-color 0.25s ease, color 0.25s ease,
+    transform 0.25s ease, background-color 0.4s ease;
+}
+.theme-toggle:hover {
+  border-color: var(--accent-text);
+  color: var(--accent-text);
+  transform: translateY(-2px);
+}
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--accent-text);
+  outline-offset: 2px;
+}
+
+@keyframes theme-swap {
+  from {
+    transform: rotate(-90deg) scale(0.6);
+    opacity: 0;
+  }
+  to {
+    transform: rotate(0) scale(1);
+    opacity: 1;
+  }
+}
+.theme-toggle svg {
+  animation: theme-swap 0.4s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .mobile-menu {
@@ -755,14 +799,38 @@ a {
 }
 
 .browser-view {
+  position: relative;
   aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: var(--preview-grad);
+}
+
+/* Placeholder mock — sits behind the live iframe and shows while
+   the preview loads (or if the site blocks embedding). */
+.browser-fallback {
+  position: absolute;
+  inset: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 10px;
   padding: 24px;
-  background: var(--preview-grad);
+}
+
+/* Live site preview inside the browser chrome */
+.browser-iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: var(--surface);
+  opacity: 0;
+  transition: opacity 0.6s ease;
+}
+.browser-iframe.is-loaded {
+  opacity: 1;
 }
 
 .browser-letter {
